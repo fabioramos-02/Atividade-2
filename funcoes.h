@@ -15,4 +15,5 @@ int greedy(const vector<int>& precos, int tamanho);
 float medirTempo(int (*algoritmo)(const vector<int>&, int), const vector<int>& precos, int n);
 void imprimirResultados(int n, int vDP, float tDP, int vGreedy, float tGreedy, float percentual);
 void salvarDados(int n, int vDP, float tDP, int vGreedy, float tGreedy, float percentual);
+void calcular(int inc, int fim, int stp);
 #endif
