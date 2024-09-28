@@ -30,7 +30,7 @@ int bottom_up(const vector<int>&precos, int n) {
 // Implementação da função de estratégia gulosa
 // Estratégia gulosa para o problema do corte da tora
 int greedy(const vector<int>& precos, int tamanho) {
-    int totalRevenue = 0;
+    int totalReceita = 0;
     
     // Enquanto ainda há tora para cortar
     while (tamanho > 0) {
@@ -39,21 +39,21 @@ int greedy(const vector<int>& precos, int tamanho) {
 
         // Encontrar o pedaço com a maior densidade (preço por metro)
         for (int i = 1; i < tamanho; ++i) {
-            double density = double(precos[i]) / (i + 1);
-            if (density > melhorDensidade) {
-                melhorDensidade = density;
+            double densidade = double(precos[i]) / (i + 1);
+            if (densidade > melhorDensidade) {
+                melhorDensidade = densidade;
                 melhorPreco = i + 1; // Armazena o comprimento do melhor pedaço
             }
         }
 
         // Adiciona o valor do melhor pedaço ao lucro total
-        totalRevenue += precos[melhorPreco - 1];
+        totalReceita += precos[melhorPreco - 1];
 
         // Reduz o tamanho da tora
         tamanho -= melhorPreco;
     }
 
-    return totalRevenue;
+    return totalReceita;
 }
 void merge(const vector<int>&left, const vector<int>&right, vector<int>&precos) {
     int n = left.size();
@@ -152,10 +152,8 @@ void calcular(int inc, int fim, int stp){
 
         // //executa estrategia gulosa
         int vG = greedy(precos, n);
-        // int vG = 0;
         // // Mede o tempo de execução da estratégia gulosa
         float tG = medirTempo(greedy, precos, n);
-        // float tG = 0;
 
         // Calcula o percentual de acerto do Guloso em relação à Programação Dinâmica
         float p = ((float)vG / vDP) * 100;
