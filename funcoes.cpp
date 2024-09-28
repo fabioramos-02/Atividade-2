@@ -3,7 +3,6 @@
 #include <algorithm> 
 #include <chrono>
 #include "stdio.h"
-
 //Fabio Willian Lima Ramos - 202319060712
 //Gustavo Florentin - RGA
 using namespace std::chrono;
@@ -15,45 +14,63 @@ void gerarPrecosAleatorios(vector<int>& precos, int n) {
     }
 }
 // Implementação da função de Programação Dinâmica
-int bottom_up(const vector<int>&precos, int n) {
-    vector<int> receita(n + 1, 0); //armazena os lucros 
-    for (int i = 1; i <= n; i++) {
-        int max_val = -1; //inicializa o lucro maximo
-        for (int j = 0; j < i; j++) {
-            max_val = std::max(max_val, precos[j] + receita[i - j - 1]);
-        }
-        receita[i] = max_val;
-    }
-    return receita[n];
-   
+
+// Função auxiliar para o problema do corte da tora
+/* O vetor memo é usado para verificar se uma solução
+    já foi computada ou não */
+int cutRodUtil(const vector<int>&price, int n, vector<int>& memo) {
+  
+    // se n for 0, não podemos mais cortar a vara.
+    if (n == 0) return 0;
+
+    // Se o resultado já foi computado, retorne-o.
+    if (memo[n] != -1) return memo[n];
+
+    int res = 0;
+    for (int i = 0; i < n; i++) 
+        res = std::max(res, price[i] + 
+                cutRodUtil(price, n - i - 1, memo));
+
+    // Armazena o resultado computado na tabela de 
+    // memoização e retorna-o.
+    return memo[n] = res;
+}
+
+int cutRod(const vector<int>&price, int n) {
+  
+    // Initialize memoization table with
+    // -1 to indicate uncomputed states.
+    vector<int> memo(n + 1, -1);
+  
+    return cutRodUtil(price, n, memo);
 }
 // Implementação da função de estratégia gulosa
 // Estratégia gulosa para o problema do corte da tora
 int greedy(const vector<int>& precos, int tamanho) {
-    int totalReceita = 0;
-    
-    // Enquanto ainda há tora para cortar
-    while (tamanho > 0) {
-        int melhorPreco = 1;
-        double melhorDensidade = double(precos[0]) / 1; // Densidade inicial
+   int total = 0;  // Valor total obtido pela venda dos pedaços
+    int comprimentoAtual = tamanho;  // Comprimento atual da tora
 
-        // Encontrar o pedaço com a maior densidade (preço por metro)
-        for (int i = 1; i < tamanho; ++i) {
-            double densidade = double(precos[i]) / (i + 1);
-            if (densidade > melhorDensidade) {
-                melhorDensidade = densidade;
-                melhorPreco = i + 1; // Armazena o comprimento do melhor pedaço
+    // Enquanto ainda houver madeira para cortar
+    while (comprimentoAtual > 0) {
+        // Encontra o comprimento com a maior densidade (preco / comprimento)
+        int melhorIndice = 1;
+        double melhorDensidade = static_cast<double>(precos[0]) / 1;  // densidade inicial para o pedaço de comprimento 1
+
+        // Verifica as densidades para todos os pedaços possíveis
+        for (int i = 1; i < comprimentoAtual; ++i) {
+            double densidadeAtual = static_cast<double>(precos[i]) / (i + 1);  // Calcula a densidade para o pedaço de comprimento (i+1)
+            if (densidadeAtual > melhorDensidade) {
+                melhorDensidade = densidadeAtual;
+                melhorIndice = i + 1;
             }
         }
 
-        // Adiciona o valor do melhor pedaço ao lucro total
-        totalReceita += precos[melhorPreco - 1];
-
-        // Reduz o tamanho da tora
-        tamanho -= melhorPreco;
+        // Corta o pedaço com a maior densidade e atualiza o valor total
+        total += precos[melhorIndice - 1];  // Adiciona o preço do melhor pedaço
+        comprimentoAtual -= melhorIndice;   // Atualiza o comprimento restante da tora
     }
 
-    return totalReceita;
+    return total;  // Retorna o valor total obtido
 }
 void merge(const vector<int>&left, const vector<int>&right, vector<int>&precos) {
     int n = left.size();
@@ -146,9 +163,9 @@ void calcular(int inc, int fim, int stp){
 
         mergeSort(precos, n);
         // executa programacao dinamica
-        int vDP = bottom_up(precos, n);
+        int vDP = cutRod(precos, n);
         // Mede o tempo de execução da programação dinâmica
-        float tDP = medirTempo(bottom_up, precos, n);
+        float tDP = medirTempo(cutRod, precos, n);
 
         // //executa estrategia gulosa
         int vG = greedy(precos, n);

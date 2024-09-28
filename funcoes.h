@@ -10,7 +10,9 @@ using std::vector;
 void gerarPrecosAleatorios(vector<int>& precos, int n);
 void mergeSort(vector<int>&precos, int n);
 void merge(const vector<int>&left, const vector<int>&right, vector<int>&precos);
-int bottom_up(const vector<int>&precos, int n);
+int cutRodUtil(const vector<int>&price, int n, vector<int>& memo);
+int cutRod(const vector<int>&price, int n);
+
 int greedy(const vector<int>& precos, int tamanho);
 float medirTempo(int (*algoritmo)(const vector<int>&, int), const vector<int>& precos, int n);
 void imprimirResultados(int n, int vDP, float tDP, int vGreedy, float tGreedy, float percentual);
