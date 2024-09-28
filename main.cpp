@@ -42,7 +42,7 @@ int main()
         // float tG = 0;
 
         // Calcula o percentual de acerto do Guloso em relação à Programação Dinâmica
-        float p = ((float)0 / vDP) * 100;
+        float p = ((float)vG / vDP) * 100;
         // Imprime a tupla de resultados
         imprimirResultados(n, vDP, tDP, vG, tG, p);
 

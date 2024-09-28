@@ -28,16 +28,32 @@ int bottom_up(const vector<int>&precos, int n) {
    
 }
 // Implementação da função de estratégia gulosa
-int greedy(const vector<int>&precos, int n) {
-    if (n == 0) {
-        return 0;
+// Estratégia gulosa para o problema do corte da tora
+int greedy(const vector<int>& precos, int tamanho) {
+    int totalRevenue = 0;
+    
+    // Enquanto ainda há tora para cortar
+    while (tamanho > 0) {
+        int melhorPreco = 1;
+        double melhorDensidade = double(precos[0]) / 1; // Densidade inicial
+
+        // Encontrar o pedaço com a maior densidade (preço por metro)
+        for (int i = 1; i < tamanho; ++i) {
+            double density = double(precos[i]) / (i + 1);
+            if (density > melhorDensidade) {
+                melhorDensidade = density;
+                melhorPreco = i + 1; // Armazena o comprimento do melhor pedaço
+            }
+        }
+
+        // Adiciona o valor do melhor pedaço ao lucro total
+        totalRevenue += precos[melhorPreco - 1];
+
+        // Reduz o tamanho da tora
+        tamanho -= melhorPreco;
     }
-    int max_val = -1;
-    for (int i = 0; i < n; i++) {
-        max_val = std::max(max_val, precos[i] + greedy(precos, n - i - 1));
-    }
-    return max_val;
-   
+
+    return totalRevenue;
 }
 void merge(const vector<int>&left, const vector<int>&right, vector<int>&precos) {
     int n = left.size();
